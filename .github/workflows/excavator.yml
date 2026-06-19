@@ -1,0 +1,36 @@
+name: Excavator
+
+# Auto-update manifest versions and hashes from upstream. The Scoop excavator
+# action reads each manifest's `checkver`/`autoupdate` block and commits one
+# version bump per package directly to main (the Scoop-idiomatic flow).
+#
+# It authenticates with VERSION_BUMP_TOKEN (a PAT) rather than the default
+# GITHUB_TOKEN on purpose: pushes made with GITHUB_TOKEN do not trigger other
+# workflows, so the bumps would otherwise land on main without ci.yml ever
+# validating them. actions/checkout persists this PAT as the push credential
+# (so `git push` lifts the recursion guard and ci.yml runs on each bump), and
+# the env token reuses it for checkver's GitHub API calls.
+#
+# Requires a repository secret VERSION_BUMP_TOKEN: a PAT with contents write
+# access (classic: `repo` scope; fine-grained: Contents read/write on this repo).
+on:
+  schedule:
+    - cron: '23 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  excavate:
+    name: Excavate
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          token: ${{ secrets.VERSION_BUMP_TOKEN }}
+      - name: Excavate
+        uses: ScoopInstaller/GithubActions@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.VERSION_BUMP_TOKEN }}
+          SKIP_UPDATED: '1'

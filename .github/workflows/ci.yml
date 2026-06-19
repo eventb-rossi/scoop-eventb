@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'bucket/**'
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Validate manifests
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Validate
+        uses: ScoopInstaller/GithubActions@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,100 @@
+name: Build fat JARs
+
+# b2program and tlc4b publish no usable runnable JAR upstream (b2program has no
+# tagged releases; tlc4b ships only a thin jar). This workflow rebuilds a
+# self-contained fat JAR from upstream source and publishes it as a release asset
+# on THIS repo, which the corresponding bucket manifests download.
+#
+# Run manually (workflow_dispatch) when bumping either pinned version, then update
+# the manifest `version`/`url`/`hash` to match the new release asset.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  b2program:
+    name: Build b2program fat JAR
+    runs-on: ubuntu-latest
+    env:
+      # Upstream publishes no tags; pin a known-good master commit (dated 2026-05-12).
+      COMMIT: 6deb3e17a4cdb97ccc2e2946f7aaafb8e5fa2ba6
+      RELEASE_TAG: b2program-0.1.0-20260512
+    steps:
+      - name: Checkout upstream
+        uses: actions/checkout@v7
+        with:
+          repository: favu100/b2program
+          ref: ${{ env.COMMIT }}
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          # Gradle 9.4 wrapper does not run on JDK 26; b2program targets Java 17 bytecode.
+          java-version: '21'
+      - name: Build fat JAR
+        run: ./gradlew --no-daemon fatJar -x test
+      - name: Stage asset
+        run: |
+          jar=$(ls build/libs/B2Program-all-*.jar | head -n1)
+          mkdir -p out && cp "$jar" out/b2program.jar
+          sha256sum out/b2program.jar
+      - name: Publish release asset
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: b2program ${{ env.RELEASE_TAG }}
+          body: |
+            Fat JAR rebuilt from favu100/b2program @ ${{ env.COMMIT }}.
+            Consumed by the scoop-eventb `b2program` manifest.
+          files: out/b2program.jar
+
+  tlc4b:
+    name: Build tlc4b fat JAR
+    runs-on: ubuntu-latest
+    env:
+      VERSION: '1.2.3'
+      RELEASE_TAG: tlc4b-1.2.3
+    steps:
+      - name: Checkout upstream
+        uses: actions/checkout@v7
+        with:
+          repository: hhu-stups/tlc4b
+          ref: ${{ env.VERSION }}
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Write fat-jar init script
+        # tlc4b has no shadow/fat-jar task, so fold the runtime classpath into the
+        # standard `jar` task via an init script (mirrors the Homebrew formula).
+        run: |
+          cat > fatjar.gradle <<'EOF'
+          allprojects {
+            afterEvaluate { p ->
+              if (p.plugins.hasPlugin('java')) {
+                p.tasks.named('jar', Jar) {
+                  duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+                  exclude 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA'
+                  manifest { attributes('Main-Class': 'de.tlc4b.TLC4B') }
+                  from { p.configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+                }
+              }
+            }
+          }
+          EOF
+      - name: Build fat JAR
+        run: ./gradlew --no-daemon -I fatjar.gradle jar -x test
+      - name: Stage asset
+        run: |
+          mkdir -p out && cp "build/libs/tlc4b-${VERSION}.jar" out/tlc4b.jar
+          sha256sum out/tlc4b.jar
+      - name: Publish release asset
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          name: tlc4b ${{ env.VERSION }}
+          body: |
+            Fat JAR rebuilt from hhu-stups/tlc4b @ ${{ env.VERSION }}.
+            Consumed by the scoop-eventb `tlc4b` manifest.
+          files: out/tlc4b.jar
