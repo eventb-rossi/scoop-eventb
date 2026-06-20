@@ -27,6 +27,7 @@ Scoop adds on demand), so you do not need to install Java yourself.
 | `tlc4b` | Model-check classical B via TLA+/TLC | CLI; fat JAR built by this repo's CI |
 | `eventb-to-txt` | Convert Rodin Event-B models to CamilleX text | CLI; needs Python (pip-installed on demand) |
 | `rodin` | Rodin Platform — Event-B IDE | Portable; Start Menu shortcut; needs Java 17+ |
+| `rodin-rc` | Rodin Platform — Event-B IDE (release candidate) | Portable; Start Menu shortcut; pre-release; needs Java 17+ |
 | `prob` | ProB animator / model checker (CLI `probcli` + Tcl/Tk GUI) | Portable; shim + Start Menu shortcut |
 | `prob2-ui` | ProB2-UI — JavaFX animator / model checker | Portable; shim + Start Menu shortcut; needs Java 21 |
 | `atelier-b` | Atelier B Community Edition — B-method IDE | Portable; Start Menu shortcut; freeware |
