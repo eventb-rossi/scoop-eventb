@@ -28,6 +28,7 @@ Scoop adds on demand), so you do not need to install Java yourself.
 | `eventb-to-txt` | Convert Rodin Event-B models to CamilleX text | CLI; needs Python (pip-installed on demand) |
 | `rodin` | Rodin Platform — Event-B IDE | Portable; Start Menu shortcut; needs Java 17+ |
 | `prob` | ProB animator / model checker (CLI `probcli` + Tcl/Tk GUI) | Portable; shim + Start Menu shortcut |
+| `prob2-ui` | ProB2-UI — JavaFX animator / model checker | Portable; shim + Start Menu shortcut; needs Java 21 |
 
 ## Maintenance
 
