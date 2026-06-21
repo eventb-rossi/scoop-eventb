@@ -4,7 +4,7 @@ A [Scoop](https://scoop.sh) bucket for the [Event-B](https://www.event-b.org/) a
 B-method tool ecosystem. This bucket is the Windows counterpart and tracks the same
 versions.
 
-It covers the command-line / JVM tools and the two portable GUI apps.
+It covers the command-line / JVM / native tools and the two portable GUI apps.
 
 ## Install
 
@@ -23,6 +23,7 @@ Scoop adds on demand), so you do not need to install Java yourself.
 | `eventb-checker` | Standalone Event-B type checker | CLI; needs Java 21 |
 | `eventb-animate` | Animate Event-B models with ProB | CLI; needs Java 21 |
 | `evbt` | EventBTool — code generation & documentation | CLI; needs Java 22+ |
+| `rossi` | Rust toolchain for Event-B (parser, checker, CLI, LSP) | CLI; native; x64 + ARM64 |
 | `b2program` | Multi-target code generator (B → Java/C++/Python/Rust/TS) | CLI; fat JAR built by this repo's CI |
 | `tlc4b` | Model-check classical B via TLA+/TLC | CLI; fat JAR built by this repo's CI |
 | `eventb-to-txt` | Convert Rodin Event-B models to CamilleX text | CLI; needs Python (pip-installed on demand) |
