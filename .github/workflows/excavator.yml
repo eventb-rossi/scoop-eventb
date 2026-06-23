@@ -15,8 +15,12 @@ name: Excavator
 # access (classic: `repo` scope; fine-grained: Contents read/write on this repo).
 on:
   schedule:
-    - cron: '23 */6 * * *'
+    - cron: '23 */6 * * *'   # safety net + third-party upstreams
   workflow_dispatch:
+  # An eventb-rossi upstream tool just released: excavate now instead of waiting
+  # for the next scheduled run (dispatched by eventb-rossi/release-automation).
+  repository_dispatch:
+    types: [upstream-release]
 
 permissions:
   contents: write
