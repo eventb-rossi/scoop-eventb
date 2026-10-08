@@ -32,7 +32,7 @@ Scoop adds on demand), so you do not need to install Java yourself.
 | `rodin-headless` | Headless build / model-check / prove toolchain for Rodin Event-B models | CLI; runs via Docker/Podman image; needs Docker Desktop (no Java) |
 | `prob` | ProB animator / model checker (CLI `probcli` + Tcl/Tk GUI) | Portable; shim + Start Menu shortcut; Tcl/Tk runtime pulled in automatically |
 | `tcltk` | Tcl/Tk 8.6 runtime (BAWT Tcl-Pure) | Dependency of `prob`; provides `tcl86.dll` and sets `SP_TCL_DSO` |
-| `prob2-ui` | ProB2-UI — JavaFX animator / model checker | Portable; shim + Start Menu shortcut; needs Java 21 |
+| `prob2-ui` | ProB2-UI — JavaFX animator / model checker | Portable; shim + Start Menu shortcut; x64; bundles its own Java runtime |
 | `atelier-b` | Atelier B Community Edition — B-method IDE | Portable; Start Menu shortcut; freeware |
 
 ## Maintenance
